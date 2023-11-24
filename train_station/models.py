@@ -110,7 +110,8 @@ class Journey(models.Model):
     )
     crew = models.ManyToManyField(
         Crew,
-        related_name="trains"
+        related_name="journeys",
+        blank=True
     )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
