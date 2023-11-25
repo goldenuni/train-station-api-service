@@ -28,6 +28,10 @@ class Route(models.Model):
     )
     distance = models.IntegerField()
 
+    @property
+    def name(self):
+        return f"{self.source}-{self.destination}"
+
     def __str__(self):
         return f"{self.source}-{self.destination}"
 
@@ -90,6 +94,10 @@ class Crew(models.Model):
         default="attendant"
     )
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} | {self.position}"
 
@@ -115,6 +123,10 @@ class Journey(models.Model):
     )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
+
+    @property
+    def info(self):
+        return f"{self.route} (Train: {self.train})"
 
     def __str__(self):
         return f"{self.route} (Departure: {self.departure_time})"
@@ -162,10 +174,11 @@ class Ticket(models.Model):
             if not (1 <= ticket_attr_value <= count_attrs):
                 raise error_to_raise(
                     {
-                        ticket_attr_name: f"{ticket_attr_name} "
-                                          f"number must be in available range: "
-                                          f"(1, {train_attr_name}): "
-                                          f"(1, {count_attrs})"
+                        ticket_attr_name:
+                            f"{ticket_attr_name} "
+                            f"number must be in available range: "
+                            f"(1, {train_attr_name}): "
+                            f"(1, {count_attrs})"
                     }
                 )
 
