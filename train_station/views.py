@@ -15,6 +15,7 @@ from train_station.models import (
     Journey,
     Order,
 )
+from train_station.permission import IsAdminOrIfAuthenticatedReadOnly
 from train_station.serializers import (
     StationSerializer,
     RouteListSerializer,
@@ -41,11 +42,13 @@ from train_station.serializers import (
 class StationViewSet(viewsets.ModelViewSet):
     queryset = Station.objects
     serializer_class = StationSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class RouteViewSet(viewsets.ModelViewSet):
     queryset = Route.objects.select_related("source", "destination")
     serializer_class = RouteSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -60,11 +63,13 @@ class RouteViewSet(viewsets.ModelViewSet):
 class TrainTypeViewSet(viewsets.ModelViewSet):
     queryset = TrainType.objects
     serializer_class = TrainTypeSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class FacilityViewSet(viewsets.ModelViewSet):
     queryset = Facility.objects
     serializer_class = FacilitySerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
 
 class TrainViewSet(viewsets.ModelViewSet):
@@ -73,6 +78,7 @@ class TrainViewSet(viewsets.ModelViewSet):
         .prefetch_related("facility")
     )
     serializer_class = TrainSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     @staticmethod
     def _params_to_int(qs):
@@ -134,6 +140,7 @@ class JourneyViewSet(viewsets.ModelViewSet):
         .prefetch_related("crew")
     )
     serializer_class = JourneySerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -160,6 +167,7 @@ class JourneyViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = Crew.objects.prefetch_related("journeys__train")
     serializer_class = CrewSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -179,6 +187,7 @@ class OrderPagePagination(PageNumberPagination):
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects
     serializer_class = OrderSerializer
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "list":
