@@ -94,7 +94,7 @@ class JourneySerializer(
         )
 
 
-class JourneyListSerializer(JourneySerializer):
+class JourneyListSerializer(serializers.ModelSerializer):
     route = serializers.SlugRelatedField(
         many=False,
         read_only=True,
@@ -110,48 +110,21 @@ class JourneyListSerializer(JourneySerializer):
         read_only=True,
         slug_field="full_name"
     )
-
-
-class CrewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Crew
-        fields = ("id", "first_name", "last_name", "position",)
-
-
-class JourneyDetailSerializer(serializers.ModelSerializer):
-    route = RouteDetailSerializer(many=False, read_only=True)
-    train = TrainSerializer(many=False, read_only=True)
-    crew = CrewSerializer(many=True, read_only=True)
+    tickets_available = serializers.IntegerField(read_only=True)
     taken_seats = serializers.SlugRelatedField(
         source="tickets",
         many=True,
         read_only=True,
-        slug_field="seat"
+        slug_field="id"
     )
 
     class Meta:
         model = Journey
         fields = (
-            "id", "route", "train", "taken_seats",
-            "crew", "departure_time", "arrival_time"
+            "id", "route", "train", "crew",
+            "departure_time", "arrival_time",
+            "tickets_available", "taken_seats",
         )
-
-
-class CrewListSerializer(serializers.ModelSerializer):
-    trains = serializers.SlugRelatedField(
-        source="journeys",
-        many=True,
-        read_only=True,
-        slug_field="info"
-    )
-
-    class Meta:
-        model = Crew
-        fields = ("id", "first_name", "last_name", "position", "trains",)
-
-
-class CrewDetailSerializer(CrewListSerializer):
-    pass
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -169,6 +142,36 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ("id", "cargo", "seat", "journey")
+
+
+class CrewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = ("id", "first_name", "last_name", "position",)
+
+
+class JourneyDetailSerializer(JourneyListSerializer):
+    route = RouteDetailSerializer(many=False, read_only=True)
+    train = TrainSerializer(many=False, read_only=True)
+    crew = CrewSerializer(many=True, read_only=True)
+    taken_seats = TicketSerializer(source="tickets", many=True, read_only=True)
+
+
+class CrewListSerializer(serializers.ModelSerializer):
+    trains = serializers.SlugRelatedField(
+        source="journeys",
+        many=True,
+        read_only=True,
+        slug_field="info"
+    )
+
+    class Meta:
+        model = Crew
+        fields = ("id", "first_name", "last_name", "position", "trains",)
+
+
+class CrewDetailSerializer(CrewListSerializer):
+    pass
 
 
 class TicketListSerializer(TicketSerializer):
