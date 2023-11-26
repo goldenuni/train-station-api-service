@@ -7,4 +7,8 @@ urlpatterns = [
         "api/train-station/",
         include("train_station.urls", namespace="train-station")
     ),
+    path(
+        "api/user/",
+        include("user.urls", namespace="user"),
+    )
 ]
