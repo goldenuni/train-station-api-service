@@ -1,4 +1,5 @@
 from django.db.models import F, Count
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -110,6 +111,22 @@ class TrainViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(facility__id__in=facility_id)
 
         return queryset.distinct()
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "train_type",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by train type id (ex. ?train_type=1,2)",
+            ),
+            OpenApiParameter(
+                "facility",
+                type={"type": "list", "items": {"type": "number"}},
+                description="Filter by facility id (ex. ?facility=1,2)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @action(
         methods=["POST"],
