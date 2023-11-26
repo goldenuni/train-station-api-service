@@ -1,5 +1,6 @@
 from django.db.models import F, Count
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
 
 from train_station.models import (
     Station,
@@ -97,6 +98,11 @@ class TrainViewSet(viewsets.ModelViewSet):
         return queryset.distinct()
 
 
+class JourneyPagePagination(PageNumberPagination):
+    page_size = 5
+    max_page_size = 50
+
+
 class JourneyViewSet(viewsets.ModelViewSet):
     queryset = (
         Journey.objects.
@@ -139,6 +145,11 @@ class CrewViewSet(viewsets.ModelViewSet):
             return CrewDetailSerializer
 
         return CrewSerializer
+
+
+class OrderPagePagination(PageNumberPagination):
+    page_size = 10
+    max_page_size = 100
 
 
 class OrderViewSet(viewsets.ModelViewSet):
