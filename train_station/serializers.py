@@ -65,7 +65,7 @@ class TrainSerializer(serializers.ModelSerializer):
         )
 
 
-class TrainListSerializer(TrainSerializer):
+class TrainListSerializer(serializers.ModelSerializer):
     train_type = serializers.SlugRelatedField(
         many=False,
         read_only=True,
@@ -77,10 +77,30 @@ class TrainListSerializer(TrainSerializer):
         slug_field="name"
     )
 
+    class Meta:
+        model = Train
+        fields = (
+            "id", "name", "image", "cargo_num",
+            "places_in_cargo", "train_type", "facility",
+        )
 
-class TrainDetailSerializer(TrainSerializer):
+
+class TrainDetailSerializer(serializers.ModelSerializer):
     train_type = TrainTypeSerializer(many=False, read_only=True)
     facility = FacilitySerializer(many=True, read_only=False)
+
+    class Meta:
+        model = Train
+        fields = (
+            "id", "name", "image", "cargo_num",
+            "places_in_cargo", "train_type", "facility",
+        )
+
+
+class TrainImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = ("id", "image")
 
 
 class JourneySerializer(
