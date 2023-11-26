@@ -102,7 +102,8 @@ class TrainViewSet(viewsets.ModelViewSet):
         facility = self.request.query_params.get("facility")
 
         if train_type:
-            queryset = queryset.filter(train_type__id=str(train_type))
+            train_type_id = self._params_to_int(train_type)
+            queryset = queryset.filter(train_type__id__in=train_type_id)
 
         if facility:
             facility_id = self._params_to_int(facility)
