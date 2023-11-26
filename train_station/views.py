@@ -62,8 +62,12 @@ class FacilityViewSet(viewsets.ModelViewSet):
 
 
 class TrainViewSet(viewsets.ModelViewSet):
-    queryset = Train.objects
+    queryset = Train.objects.select_related("train_type").prefetch_related("facility")
     serializer_class = TrainSerializer
+
+    @staticmethod
+    def _params_to_int(qs):
+        return [int(str_id) for str_id in qs.split(",")]
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -73,6 +77,20 @@ class TrainViewSet(viewsets.ModelViewSet):
             return TrainDetailSerializer
 
         return TrainSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        train_type = self.request.query_params.get("train_type")
+        facility = self.request.query_params.get("facility")
+
+        if train_type:
+            queryset = queryset.filter(train_type__id=str(train_type))
+
+        if facility:
+            facility_id = self._params_to_int(facility)
+            queryset = queryset.filter(facility__id__in=facility_id)
+
+        return queryset.distinct()
 
 
 class JourneyViewSet(viewsets.ModelViewSet):
