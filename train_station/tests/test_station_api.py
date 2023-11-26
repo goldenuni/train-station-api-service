@@ -68,9 +68,7 @@ class AdminStationTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
-            "test@test.com",
-            "test12345",
-            is_staff=True
+            "test@test.com", "test12345", is_staff=True
         )
         self.client.force_authenticate(self.user)
 
@@ -90,9 +88,7 @@ class AdminStationTests(TestCase):
 
     def test_update_station(self):
         station = sample_station()
-        payload = {
-            "name": "testik_majestik"
-        }
+        payload = {"name": "testik_majestik"}
         url = detail_url(station.id)
         res = self.client.patch(url, payload)
         self.assertEqual(res.status_code, status.HTTP_200_OK)

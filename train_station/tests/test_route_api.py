@@ -5,7 +5,9 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from train_station.models import Station, Route
-from train_station.serializers import RouteListSerializer, RouteDetailSerializer
+from train_station.serializers import (
+    RouteListSerializer, RouteDetailSerializer,
+)
 
 ROUTE_URL = reverse("train-station:route-list")
 
@@ -104,9 +106,7 @@ class AdminRouteTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
-            "test@test.com",
-            "test12345",
-            is_staff=True
+            "test@test.com", "test12345", is_staff=True
         )
         self.client.force_authenticate(self.user)
 
@@ -133,12 +133,10 @@ class AdminRouteTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-        route = Route.objects.get(id=res.data["id"])
         stations = Station.objects.all()
         self.assertEqual(stations.count(), 2)
         self.assertIn(station1, stations)
         self.assertIn(station2, stations)
-
 
     def test_update_route(self):
         route = sample_route()

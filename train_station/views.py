@@ -111,6 +111,7 @@ class TrainViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(facility__id__in=facility_id)
 
         return queryset.distinct()
+
     @extend_schema(
         parameters=[
             OpenApiParameter(

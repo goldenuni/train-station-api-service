@@ -145,7 +145,8 @@ class Migration(migrations.Migration):
                 (
                     "facility",
                     models.ManyToManyField(
-                        blank=True, related_name="trains", to="train_station.facility"
+                        blank=True,
+                        related_name="trains", to="train_station.facility"
                     ),
                 ),
                 (
@@ -209,7 +210,8 @@ class Migration(migrations.Migration):
                 (
                     "crew",
                     models.ManyToManyField(
-                        blank=True, related_name="journeys", to="train_station.crew"
+                        blank=True,
+                        related_name="journeys", to="train_station.crew"
                     ),
                 ),
                 (

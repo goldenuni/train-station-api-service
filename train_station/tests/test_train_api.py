@@ -5,8 +5,9 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from train_station.models import Train, TrainType, Facility
-from train_station.serializers import TrainListSerializer, TrainDetailSerializer
-
+from train_station.serializers import (
+    TrainListSerializer, TrainDetailSerializer,
+)
 TRAIN_URL = reverse("train-station:train-list")
 
 
@@ -33,9 +34,7 @@ def sample_facility(**params):
 
 
 def sample_train(**params):
-    defaults_tt = {
-        "name": "Test TrainType"
-    }
+    defaults_tt = {"name": "Test TrainType"}
     if params.get("name"):
         defaults_tt["name"] = params["name"]
     train_type = sample_train_type(**defaults_tt)
@@ -96,7 +95,9 @@ class AuthenticatedTrainApiTest(TestCase):
 
         train3 = sample_train(name="Train without facilities")
 
-        res = self.client.get(TRAIN_URL, {"facility": f"{facility1.id}, {facility2.id}"})
+        res = self.client.get(
+            TRAIN_URL, {"facility": f"{facility1.id}, {facility2.id}"}
+        )
         serializer1 = TrainListSerializer(train1)
         serializer2 = TrainListSerializer(train2)
         serializer3 = TrainListSerializer(train3)
@@ -114,8 +115,7 @@ class AuthenticatedTrainApiTest(TestCase):
         train_type_2 = TrainType.objects.get(id=train2.train_type.id)
 
         res = self.client.get(
-            TRAIN_URL,
-            {"train_type": f"{train_type_1.id}, {train_type_2.id}"}
+            TRAIN_URL, {"train_type": f"{train_type_1.id}, {train_type_2.id}"}
         )
 
         serializer1 = TrainListSerializer(train1)
@@ -156,9 +156,7 @@ class AdminTrainTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
-            "test@test.com",
-            "test12345",
-            is_staff=True
+            "test@test.com", "test12345", is_staff=True
         )
         self.client.force_authenticate(self.user)
 
@@ -173,7 +171,6 @@ class AdminTrainTests(TestCase):
         }
 
         res = self.client.post(TRAIN_URL, payload)
-        train = Train.objects.get(id=res.data["id"])
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
@@ -187,7 +184,7 @@ class AdminTrainTests(TestCase):
             "cargo_num": 100,
             "places_in_cargo": 50,
             "train_type": train_type.id,
-            "facility": [facility1.id, facility2.id]
+            "facility": [facility1.id, facility2.id],
         }
 
         res = self.client.post(TRAIN_URL, payload)
